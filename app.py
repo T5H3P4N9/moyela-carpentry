@@ -7,14 +7,22 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, instance_relative_config=True)
 
-# 🔐 SECURITY: Secret key from environment ONLY
+# 🔐 SECRET KEY
 app.secret_key = os.environ.get("SECRET_KEY")
 
-
-# 🐘 DATABASE CONFIG (POSTGRESQL READY)
+# ======================
+# DATABASE CONFIG (FIXED)
+# ======================
 db_url = os.environ.get("DATABASE_URL")
 
-if db_url and db_url.startswith("postgres://"):
+# 🟡 fallback for local development (prevents crash)
+if not db_url:
+    db_path = os.path.join(app.instance_path, "database.db")
+    os.makedirs(app.instance_path, exist_ok=True)
+    db_url = "sqlite:///" + db_path.replace(os.path.sep, "/")
+
+# 🐘 fix Render postgres format
+if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = db_url
@@ -47,7 +55,6 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-
 # ======================
 # INIT DB
 # ======================
@@ -55,14 +62,14 @@ class User(db.Model):
 with app.app_context():
     db.create_all()
 
-    # ensure "service" column exists (safe upgrade)
+    # ensure column exists (safe migration)
     inspector = inspect(db.engine)
-    column_names = [column["name"] for column in inspector.get_columns("quote")]
-    if "service" not in column_names:
+    columns = [c["name"] for c in inspector.get_columns("quote")]
+    if "service" not in columns:
         db.session.execute(text("ALTER TABLE quote ADD COLUMN service VARCHAR(50)"))
         db.session.commit()
 
-    # create admin user if not exists
+    # create admin user (from env or default)
     admin_username = os.environ.get("ADMIN_USERNAME", "Tshepang")
     admin_password = os.environ.get("ADMIN_PASSWORD", "1234")
 
@@ -71,7 +78,6 @@ with app.app_context():
         user.set_password(admin_password)
         db.session.add(user)
         db.session.commit()
-
 
 # ======================
 # ROUTES
@@ -88,7 +94,7 @@ def about():
     return render_template("about.html", active_page="about")
 
 
-@app.route("/quote", methods=["GET", "POST"], strict_slashes=False)
+@app.route("/quote", methods=["GET", "POST"])
 def quote():
     if request.method == "POST":
         new_quote = Quote(
