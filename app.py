@@ -1,27 +1,29 @@
 import os
+import json 
 from flask import Flask, render_template, redirect, request, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import inspect, text
+from sqlalchemy import inspect, text, func
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, instance_relative_config=True)
 
-# 🔐 SECRET KEY
-app.secret_key = os.environ.get("SECRET_KEY")
+# ======================
+# SECURITY
+# ======================
+app.secret_key = os.environ.get("SECRET_KEY", "dev-fallback-secret")
 
 # ======================
-# DATABASE CONFIG (FIXED)
+# DATABASE CONFIG (RENDER SAFE)
 # ======================
 db_url = os.environ.get("DATABASE_URL")
 
-# 🟡 fallback for local development (prevents crash)
 if not db_url:
     db_path = os.path.join(app.instance_path, "database.db")
     os.makedirs(app.instance_path, exist_ok=True)
     db_url = "sqlite:///" + db_path.replace(os.path.sep, "/")
 
-# 🐘 fix Render postgres format
+# Render fix
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
@@ -33,7 +35,6 @@ db = SQLAlchemy(app)
 # ======================
 # MODELS
 # ======================
-
 class Quote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -58,18 +59,16 @@ class User(db.Model):
 # ======================
 # INIT DB
 # ======================
-
 with app.app_context():
     db.create_all()
 
-    # ensure column exists (safe migration)
     inspector = inspect(db.engine)
     columns = [c["name"] for c in inspector.get_columns("quote")]
+
     if "service" not in columns:
         db.session.execute(text("ALTER TABLE quote ADD COLUMN service VARCHAR(50)"))
         db.session.commit()
 
-    # create admin user (from env or default)
     admin_username = os.environ.get("ADMIN_USERNAME", "Tshepang")
     admin_password = os.environ.get("ADMIN_PASSWORD", "1234")
 
@@ -82,14 +81,12 @@ with app.app_context():
 # ======================
 # ROUTES
 # ======================
-
 @app.route("/")
 def index():
     return render_template("index.html", active_page="home")
 
 
 @app.route("/about")
-@app.route("/about/")
 def about():
     return render_template("about.html", active_page="about")
 
@@ -103,33 +100,26 @@ def quote():
             service=request.form.get("service"),
             description=request.form["description"]
         )
-
         db.session.add(new_quote)
         db.session.commit()
-
         return redirect(url_for("index"))
 
     return render_template("quote.html", active_page="quote")
 
-
 # ======================
 # AUTH
 # ======================
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+        user = User.query.filter_by(username=request.form.get("username")).first()
 
-        user = User.query.filter_by(username=username).first()
-
-        if user and user.check_password(password):
+        if user and user.check_password(request.form.get("password")):
             session["logged_in"] = True
             session["user_id"] = user.id
             return redirect(url_for("admin"))
-        else:
-            flash("Invalid credentials")
+
+        flash("Invalid credentials")
 
     return render_template("login.html")
 
@@ -139,18 +129,48 @@ def logout():
     session.clear()
     return redirect(url_for("index"))
 
-
 # ======================
-# ADMIN
+# ADMIN DASHBOARD
 # ======================
-
 @app.route("/admin")
 def admin():
     if not session.get("logged_in"):
         return redirect(url_for("login"))
 
     quotes = Quote.query.order_by(Quote.created_at.desc()).all()
-    return render_template("admin.html", quotes=quotes, active_page="admin")
+    total_quotes = Quote.query.count()
+
+    # 📊 Quotes per day
+    quotes_per_day = db.session.query(
+        func.date(Quote.created_at),
+        func.count(Quote.id)
+    ).group_by(func.date(Quote.created_at)).all()
+
+    # 📈 Services (FIXED NULL ISSUE)
+    top_services = db.session.query(
+        func.coalesce(Quote.service, "Unknown"),
+        func.count(Quote.id)
+    ).group_by(func.coalesce(Quote.service, "Unknown"))\
+     .order_by(func.count(Quote.id).desc())\
+     .all()
+
+    return render_template(
+        "admin.html",
+        quotes=quotes,
+        total_quotes=total_quotes,
+
+        quotes_per_day=json.dumps([
+            {"date": str(day), "count": count}
+            for day, count in quotes_per_day
+        ]),
+
+        top_services=json.dumps([
+            {"service": service, "count": count}
+            for service, count in top_services
+        ]),
+
+        active_page="admin"
+    )
 
 
 @app.route("/admin/status/<int:quote_id>", methods=["POST"])
@@ -168,10 +188,8 @@ def delete_quote(quote_id):
     db.session.commit()
     return redirect(url_for("admin"))
 
-
 # ======================
 # RUN
 # ======================
-
 if __name__ == "__main__":
     app.run()

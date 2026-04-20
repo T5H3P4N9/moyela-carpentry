@@ -2,54 +2,160 @@
 
 {% block head %}
 <title>Admin Dashboard | Moyela Carpentry</title>
-{% endblock%}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
 
 {% block body %}
-  <section class="page-header">
-    <h1>Admin Dashboard</h1>
-    <p>Manage incoming quote requests. <a href="{{ url_for('logout') }}" style="color: #dc3545;">Logout</a></p>
-  </section>
+<section class="page-header">
+  <h1>Admin Dashboard</h1>
+  <p>
+    Manage quotes |
+    <a href="{{ url_for('logout') }}" style="color: #dc3545;">Logout</a>
+  </p>
+</section>
 
-  <section class="section section--white">
-    <div class="container">
-      {% if quotes %}
-      <div style="overflow-x:auto;">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Phone</th>
-              <th>Service</th>
-              <th>Description</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for quote in quotes %}
-            <tr>
-              <td>{{ quote.name }}</td>
-              <td>{{ quote.phone }}</td>
-              <td>{{ quote.service or "Not specified" }}</td>
-              <td>{{ quote.description }}</td>
-              <td><span class="badge badge--{{ quote.status }}">{{ quote.status|capitalize }}</span></td>
-              <td>
-                <form method="POST" action="{{ url_for('update_quote_status', quote_id=quote.id) }}" style="display:inline; margin-right: 8px;">
-                  <input type="hidden" name="status" value="done">
-                  <button type="submit" class="btn-sm btn-sm--green">Mark as Done</button>
-                </form>
-                <form method="POST" action="{{ url_for('delete_quote', quote_id=quote.id) }}" style="display:inline;">
-                  <button type="submit" class="btn-sm btn-sm--red">Delete</button>
-                </form>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+<section class="section section--white">
+  <div class="container">
+
+    <!-- ===== STATS CARDS ===== -->
+    <div class="dashboard-cards">
+
+      <div class="card">
+        <h3>Total Leads</h3>
+        <p>{{ total_quotes }}</p>
       </div>
-      {% else %}
-      <p>No quotes have been submitted yet.</p>
-      {% endif %}
+
+      <div class="card">
+        <h3>Most Requested Service</h3>
+        <p id="topService">Loading...</p>
+      </div>
+
     </div>
-  </section>
+
+    <!-- ===== CHARTS ===== -->
+    <div class="charts-grid" style="margin-top:40px; display:grid; grid-template-columns:1fr 1fr; gap:30px;">
+
+      <div class="card">
+        <h3>Quotes Per Day</h3>
+        <canvas id="quotesChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Services Breakdown</h3>
+        <canvas id="servicesChart"></canvas>
+      </div>
+
+    </div>
+
+    <!-- ===== TABLE ===== -->
+    <div style="overflow-x:auto; margin-top:40px;">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Service</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for quote in quotes %}
+          <tr>
+            <td>{{ quote.name }}</td>
+            <td>{{ quote.phone }}</td>
+            <td>{{ quote.service or "Not specified" }}</td>
+            <td>{{ quote.description }}</td>
+            <td>
+              <span class="badge badge--{{ quote.status }}">
+                {{ quote.status|capitalize }}
+              </span>
+            </td>
+            <td>
+              <form method="POST" action="{{ url_for('update_quote_status', quote_id=quote.id) }}" style="display:inline;">
+                <input type="hidden" name="status" value="done">
+                <button class="btn-sm btn-sm--green">Done</button>
+              </form>
+
+              <form method="POST" action="{{ url_for('delete_quote', quote_id=quote.id) }}" style="display:inline;">
+                <button class="btn-sm btn-sm--red">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== CHART SCRIPT ===== -->
+ <script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    const quotesPerDay = JSON.parse('{{ quotes_per_day | safe }}');
+    const topServices = JSON.parse('{{ top_services | safe }}');
+
+    // ===== Top Service =====
+    const topServiceEl = document.getElementById("topService");
+
+    if (topServices.length > 0) {
+      topServiceEl.innerText =
+        topServices[0].service + " (" + topServices[0].count + ")";
+    } else {
+      topServiceEl.innerText = "No data";
+    }
+
+    // ===== Quotes Chart =====
+    const quotesCanvas = document.getElementById("quotesChart");
+
+    if (quotesCanvas && quotesPerDay.length > 0) {
+      new Chart(quotesCanvas, {
+        type: "line",
+        data: {
+          labels: quotesPerDay.map(q => q.date),
+          datasets: [{
+            label: "Quotes",
+            data: quotesPerDay.map(q => q.count),
+            borderWidth: 2,
+            tension: 0.3
+          }]
+        }
+      });
+    }
+
+    // ===== Services Chart =====
+    const servicesCanvas = document.getElementById("servicesChart");
+
+    if (servicesCanvas && topServices.length > 0) {
+      new Chart(servicesCanvas, {
+        type: "bar",
+        data: {
+          labels: topServices.map(s => s.service),
+          datasets: [{
+            label: "Requests",
+            data: topServices.map(s => s.count)
+          }]
+        }
+      });
+    }
+
+  });
+
+  // bar chart
+new Chart(document.getElementById("servicesChart"), {
+  type: "bar",
+  data: {
+    labels: services.map(s => s.service),
+    datasets: [{
+      label: "Requests",
+      data: services.map(s => s.count)
+    }]
+  }
+});
+</script>
 {% endblock %}
