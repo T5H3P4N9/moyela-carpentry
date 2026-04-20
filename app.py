@@ -3,9 +3,11 @@ from flask import Flask, render_template, redirect, request, url_for, session, f
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import inspect, text
 from datetime import datetime
+import secrets
 
 app = Flask(__name__, instance_relative_config=True)
-app.secret_key = 'your-secret-key-here'  # Change this to a secure random key
+app.secret_key = secrets.token_hex(16)
+
 
 os.makedirs(app.instance_path, exist_ok=True)
 db_path = os.path.join(app.instance_path, "database.db")
