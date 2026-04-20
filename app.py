@@ -6,7 +6,7 @@ from datetime import datetime
 import secrets
 
 app = Flask(__name__, instance_relative_config=True)
-app.secret_key = secrets.token_hex(16)
+app.secret_key = os.environ.get("SECRET_KEY", "fallback-secret")
 
 
 os.makedirs(app.instance_path, exist_ok=True)
