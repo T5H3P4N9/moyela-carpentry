@@ -1,10 +1,12 @@
 import os
 import json 
+import smtplib
 from flask import Flask, render_template, redirect, request, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import inspect, text, func
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from email.mime.text import MIMEText
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -78,6 +80,38 @@ with app.app_context():
         db.session.add(user)
         db.session.commit()
 
+#email notification function
+def send_email_notification(name, phone, service, description):
+    sender = os.environ.get("EMAIL_USER")
+    password = os.environ.get("EMAIL_PASS")
+    receiver = os.environ.get("EMAIL_RECEIVER")
+
+    subject = "New Quote Request - Moyela Carpentry"
+
+    body = f"""
+    New quote received:
+
+    Name: {name}
+    Phone: {phone}
+    Service: {service}
+    Description: {description}
+    """
+
+    msg = MIMEText(body)
+    msg["Subject"] = subject
+    msg["From"] = sender
+    msg["To"] = receiver
+
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender, password)
+            server.send_message(msg)
+        print("Email sent successfully")
+    except Exception as e:
+        print("Email failed:", e)
+
+
+
 # ======================
 # ROUTES
 # ======================
@@ -94,14 +128,24 @@ def about():
 @app.route("/quote", methods=["GET", "POST"])
 def quote():
     if request.method == "POST":
+        name = request.form["name"]
+        phone = request.form["phone"]
+        service = request.form.get("service")
+        description = request.form["description"]
+
         new_quote = Quote(
-            name=request.form["name"],
-            phone=request.form["phone"],
-            service=request.form.get("service"),
-            description=request.form["description"]
+            name=name,
+            phone=phone,
+            service=service,
+            description=description
         )
+
         db.session.add(new_quote)
         db.session.commit()
+
+        # ✅ SEND EMAIL HERE
+        send_email_notification(name, phone, service, description)
+
         return redirect(url_for("index"))
 
     return render_template("quote.html", active_page="quote")
