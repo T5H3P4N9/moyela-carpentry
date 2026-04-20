@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Get a Quote | Moyela Carpentry</title>
+{% endblock %}
+
+{% block body %}
+  <section class="page-header">
+    <h1>Request a Quote</h1>
+    <p>Tell us about your project and we'll get back to you within 24 hours.</p>
+  </section>
+
+  <section class="section section--white">
+    <div class="container">
+      <form class="quote-form" method="POST" action="{{ url_for('quote') }}">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" placeholder="e.g. Thabo Mokoena" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" placeholder="e.g. 071 234 5678" required>
+        </div>
+        <div class="form-group">
+          <label for="service">Service Needed</label>
+          <select id="service" name="service">
+            <option value="">Select a service</option>
+            <option value="Kitchen Units">Kitchen Units</option>
+            <option value="Wardrobes">Wardrobes</option>
+            <option value="Custom Woodwork">Custom Woodwork</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="description">Project Description</label>
+          <textarea id="description" name="description" placeholder="Describe your project, measurements, and any specific requirements..." required></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;">Submit Quote Request</button>
+      </form>
+    </div>
+  </section>
+{% endblock %}

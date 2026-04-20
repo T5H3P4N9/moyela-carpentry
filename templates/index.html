@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Moyela Carpentry | Kitchen Units, Wardrobes & Custom Woodwork in Bethal</title>
+{% endblock %}
+
+{% block body %}
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div>
+        <h1 class="hero__title">Expert Carpentry<br>for Your Home</h1>
+        <p class="hero__subtitle">Quality craftsmanship for kitchens, wardrobes, and custom woodwork. Over 10 years of trusted service across Gauteng.</p>
+        <div class="hero__buttons">
+          <a href="{{ url_for('quote') }}" class="btn-primary">Request a Quote</a>
+          <a href="https://wa.me/27123456789" target="_blank" rel="noopener" class="btn-outline">Contact Us</a>
+        </div>
+        <div class="hero__trust">
+          <span class="hero__stars">★★★★★</span>
+          <span>Trusted by 100+ homeowners</span>
+        </div>
+      </div>
+      <div class="hero__image">
+        <img src="{{ url_for('static', filename='images/hero-carpenter.jpg') }}" alt="Sphiwe Mokoena crafting custom carpentry" width="800" height="1000">
+        <div class="hero__badge">
+          <strong>10+ Years</strong>
+          <span>of Expert Carpentry</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="section section--beige">
+    <div class="container">
+      <h2 class="section__title text-center">Our Services</h2>
+      <p class="section__subtitle text-center">From kitchen installations to bespoke furniture, we bring your vision to life with precision and care.</p>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-card__img"><img src="{{ url_for('static', filename='images/kitchen-units.jpg') }}" alt="Kitchen Units" loading="lazy"></div>
+          <div class="service-card__body">
+            <h3>Kitchen Units</h3>
+            <p>Custom-built kitchen cabinetry designed to fit your space and style perfectly.</p>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-card__img"><img src="{{ url_for('static', filename='images/wardrobes.jpg') }}" alt="Wardrobes" loading="lazy"></div>
+          <div class="service-card__body">
+            <h3>Wardrobes</h3>
+            <p>Built-in and freestanding wardrobes crafted with precision and quality materials.</p>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-card__img"><img src="{{ url_for('static', filename='images/custom-woodwork.jpg') }}" alt="Custom Woodwork" loading="lazy"></div>
+          <div class="service-card__body">
+            <h3>Custom Woodwork</h3>
+            <p>Shelving, furniture, and bespoke wood pieces tailored to your needs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Preview -->
+  <section class="section section--white">
+    <div class="container">
+      <div class="about-grid">
+        <div>
+          <p class="section__label">About Us</p>
+          <h2 class="section__title">Delivering dependable carpentry with a personal touch</h2>
+          <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 8px;">Founded by Sphiwe Mokoena, Moyela Carpentry has been transforming homes across Gauteng for over a decade. We believe every home deserves expert care and quality craftsmanship that stands the test of time.</p>
+          <div class="about-stats">
+            <div class="about-stat"><strong>10+</strong><span>Years Experience</span></div>
+            <div class="about-stat"><strong>100+</strong><span>Happy Clients</span></div>
+          </div>
+          <a href="{{ url_for('about') }}" class="btn-forest">More About Us</a>
+        </div>
+        <img src="{{ url_for('static', filename='images/about-carpenter.jpg') }}" alt="Sphiwe Mokoena, owner of Moyela Carpentry" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section section--beige">
+    <div class="container">
+      <h2 class="section__title text-center">What Our Clients Say</h2>
+      <div class="testimonials-grid" style="margin-top:48px;">
+        <div class="testimonial-card">
+          <div class="testimonial-card__stars">★★★★★</div>
+          <p>"Sphiwe built our kitchen units and they look incredible. Professional from start to finish."</p>
+          <strong>Thabo M.</strong><span class="location">Johannesburg</span>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-card__stars">★★★★★</div>
+          <p>"The wardrobes he made for us are perfect. Great quality wood and attention to detail."</p>
+          <strong>Naledi K.</strong><span class="location">Pretoria</span>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-card__stars">★★★★★</div>
+          <p>"Reliable, on time, and the craftsmanship speaks for itself. Highly recommend Moyela Carpentry."</p>
+          <strong>David R.</strong><span class="location">Centurion</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section section--forest cta">
+    <div class="container">
+      <h2 class="section__title">Ready to Transform Your Home?</h2>
+      <p>Get in touch today for a free consultation and quote. Let's build something beautiful together.</p>
+      <a href="{{ url_for('quote') }}" class="btn-primary">Request a Free Quote</a>
+    </div>
+  </section>
+{% endblock %}

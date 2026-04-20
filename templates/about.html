@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>About Us | Moyela Carpentry</title>
+{% endblock %}
+
+{% block body %}
+  <section class="page-header">
+    <h1>About Moyela Carpentry</h1>
+    <p>Over a decade of quality craftsmanship, built on trust and dedication.</p>
+  </section>
+
+  <section class="section section--white">
+    <div class="container">
+      <div class="about-grid">
+        <div>
+          <p class="section__label">Our Story</p>
+          <h2 class="section__title">Built on Passion, Driven by Quality</h2>
+          <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 16px;">Moyela Carpentry was founded by Sphiwe Mokoena over 10 years ago with a simple mission: to deliver dependable, high-quality carpentry to homeowners across Gauteng.</p>
+          <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 16px;">What started as a one-man operation has grown into a trusted name in kitchen units, wardrobes, and custom woodwork. As a registered company, we take pride in every project — treating each home as if it were our own.</p>
+          <p style="color: var(--text-muted); line-height: 1.7;">We don't do ceiling installations — we focus exclusively on what we do best: kitchens, wardrobes, and bespoke woodwork, ensuring every piece is crafted to perfection.</p>
+          <div class="about-stats">
+            <div class="about-stat"><strong>10+</strong><span>Years Experience</span></div>
+            <div class="about-stat"><strong>100+</strong><span>Happy Clients</span></div>
+            <div class="about-stat"><strong>Mpumalanga</strong><span>Service Area</span></div>
+          </div>
+        </div>
+        <img src="{{ url_for('static', filename='images/about-carpenter.jpg') }}" alt="Sphiwe Mokoena working in workshop" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--beige">
+    <div class="container text-center">
+      <h2 class="section__title">Our Values</h2>
+      <p class="section__subtitle">The principles that guide every project we take on.</p>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-card__icon">🛠️</div>
+          <h3>Quality Craftsmanship</h3>
+          <p>We use premium materials and proven techniques to ensure every piece is built to last.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-card__icon">🤝</div>
+          <h3>Reliability</h3>
+          <p>We show up on time, communicate clearly, and deliver on our promises — every time.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-card__icon">⭐</div>
+          <h3>Professionalism</h3>
+          <p>As a registered business, we operate with integrity, transparency, and respect for your home.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--forest cta">
+    <div class="container">
+      <h2 class="section__title">Let's Build Something Together</h2>
+      <p>Ready to transform your space? Get in touch for a free consultation.</p>
+      <a href="{{ url_for('quote') }}" class="btn-primary">Request a Free Quote</a>
+    </div>
+  </section>
+{% endblock %}
