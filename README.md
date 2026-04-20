@@ -1,65 +1,68 @@
-# 🪚 Moyela Carpentry Website
+#  Moyela Carpentry Website – Quote Management System
 
-A full-stack web application built with Flask for managing customer quote requests for a carpentry business. This project includes a public-facing website and an admin dashboard to manage incoming quotes.
-
----
-
-## 🌐 Live Demo
-
-👉 https://moyela-carpentry.onrender.com
+A full-stack Flask web application for managing carpentry quote requests, admin dashboard analytics, and email notifications. Built for a real business workflow with authentication, database storage, and data visualization.
 
 ---
 
-## 📌 Features
+##  Live Demo
 
-### 👤 Public Users
-
-* View homepage and about page
-* Submit a quote request
-* Select service type
-* Provide contact details and project description
-
-### 🔐 Admin Panel
-
-* Secure login system (session-based)
-* View all submitted quotes
-* Update quote status (e.g., new, done)
-* Delete quotes
+ https://moyela-carpentry.onrender.com
 
 ---
 
-## 🛠️ Tech Stack
+##  Features
 
-* **Backend:** Python, Flask
-* **Database:** SQLite (SQLAlchemy ORM)
-* **Frontend:** HTML, CSS (Jinja2 Templates)
-* **Server:** Gunicorn
-* **Deployment:** Render
+    Public website (Home, About, Quote page)
+    Quote submission form (clients request quotes)
+    Admin login system (secure session auth)
+    Admin dashboard with analytics:
+        Total leads counter
+        Quotes per day chart
+        Most requested services chart
+    Email notifications for new quotes (SMTP Gmail)
+    Admin controls:
+        Mark quote as done
+        Delete quotes
+    PostgreSQL / SQLite support (Render-ready deployment)
+    Production deployment ready (Render / any cloud platform)
 
 ---
 
-## 📂 Project Structure
+##  Tech Stack
+
+Backend: Flask (Python)
+Database: SQLAlchemy (SQLite / PostgreSQL)
+Frontend: HTML, CSS, JavaScript
+Charts: Chart.js
+Auth: Flask sessions + Werkzeug security
+Email: SMTP (Gmail App Password)
+
+---
+
+##  Project Structure
 
 ```
-moyela-carpentry/
+project/
 │
 ├── app.py
-├── requirements.txt
 ├── instance/
-│   └── database.db
 ├── templates/
+│   ├── base.html
 │   ├── index.html
 │   ├── about.html
 │   ├── quote.html
 │   ├── login.html
 │   └── admin.html
+│
 ├── static/
-│   └── (CSS, images, JS)
+│   └── styles.css
+│
+└── README.md
 ```
 
 ---
 
-## ⚙️ Installation & Setup
+##  Installation & Setup
 
 ### 1. Clone the repository
 
@@ -95,25 +98,34 @@ http://127.0.0.1:5000
 
 ---
 
-## 🔑 Environment Variables
+##  Environment Variables
 
-Create a `.env` file or set environment variables:
+Create a `.env` file or set on Render:
 
 ```
-SECRET_KEY=your_secret_key_here
+SECRET_KEY=your_secret_key
+
+DATABASE_URL=your_postgres_url
+
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=admin123
+
+EMAIL_USER=yourgmail@gmail.com
+EMAIL_PASS=your_google_app_password
+EMAIL_RECEIVER=yourgmail@gmail.com
 ```
 
 ---
 
-## 🚀 Deployment (Render)
+##  Deployment (Render)
 
-* Build Command:
+ Build Command:
 
 ```
 pip install -r requirements.txt
 ```
 
-* Start Command:
+ Start Command:
 
 ```
 gunicorn app:app
@@ -121,23 +133,39 @@ gunicorn app:app
 
 ---
 
-## ⚠️ Known Limitations
+##  Admin Dashboard
 
-* Uses SQLite (data may reset on free hosting)
-* Admin authentication is hardcoded (not secure for production)
+/login
+
+  ## Admin features:
+
+    View all quotes
+    Track leads
+    View charts (Chart.js)
+    Manage quote status
+
+---
+
+## Email System
+
+When a client submits a quote:
+
+Email is sent automatically to admin
+Uses Gmail SMTP
+Requires Google App Password
 
 ---
 
-## 🔮 Future Improvements
+## Deployment (Render)
+Push project to GitHub
+Create Render Web Service
+## Add environment variables:
+    DATABASE_URL
+    SECRET_KEY
+    EMAIL_USER
+    EMAIL_PASS
+Deploy
 
-* 🔐 Secure authentication system (hashed passwords)
-* 🐘 PostgreSQL database integration
-* 📱 Mobile responsiveness improvements
-* 🎨 UI/UX enhancements
-* 📊 Admin dashboard analytics
-* 🌍 SEO optimization
-
----
 
 ## 👨‍💻 Author
 
