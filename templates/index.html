@@ -17,11 +17,11 @@
         </div>
         <div class="hero__trust">
           <span class="hero__stars">★★★★★</span>
-          <span>Trusted by 100+ homeowners</span>
+          <span><p class="hero__text">Trusted by 100+ homeowners</p></span>
         </div>
       </div>
       <div class="hero__image">
-        <img src="{{ url_for('static', filename='images/hero-carpenter.jpg') }}" alt="Sphiwe Mokoena crafting custom carpentry" width="800" height="1000">
+        <img src="{{ url_for('static', filename='images/images_1.png') }}" alt="Sphiwe Mokoena crafting custom carpentry" width="800" height="1000">
         <div class="hero__badge">
           <strong>10+ Years</strong>
           <span>of Expert Carpentry</span>
@@ -37,21 +37,21 @@
       <p class="section__subtitle text-center">From kitchen installations to bespoke furniture, we bring your vision to life with precision and care.</p>
       <div class="services-grid">
         <div class="service-card">
-          <div class="service-card__img"><img src="{{ url_for('static', filename='images/kitchen-units.jpg') }}" alt="Kitchen Units" loading="lazy"></div>
+          <div class="service-card__img"><img src="{{ url_for('static', filename='images/prod-1.png') }}" alt="Kitchen Units" loading="lazy"></div>
           <div class="service-card__body">
             <h3>Kitchen Units</h3>
             <p>Custom-built kitchen cabinetry designed to fit your space and style perfectly.</p>
           </div>
         </div>
         <div class="service-card">
-          <div class="service-card__img"><img src="{{ url_for('static', filename='images/wardrobes.jpg') }}" alt="Wardrobes" loading="lazy"></div>
+          <div class="service-card__img"><img src="{{ url_for('static', filename='images/prod-2.png') }}" alt="Wardrobes" loading="lazy"></div>
           <div class="service-card__body">
             <h3>Wardrobes</h3>
             <p>Built-in and freestanding wardrobes crafted with precision and quality materials.</p>
           </div>
         </div>
         <div class="service-card">
-          <div class="service-card__img"><img src="{{ url_for('static', filename='images/custom-woodwork.jpg') }}" alt="Custom Woodwork" loading="lazy"></div>
+          <div class="service-card__img"><img src="{{ url_for('static', filename='images/prod-4.png') }}" alt="Custom Woodwork" loading="lazy"></div>
           <div class="service-card__body">
             <h3>Custom Woodwork</h3>
             <p>Shelving, furniture, and bespoke wood pieces tailored to your needs.</p>
@@ -75,7 +75,7 @@
           </div>
           <a href="{{ url_for('about') }}" class="btn-forest">More About Us</a>
         </div>
-        <img src="{{ url_for('static', filename='images/about-carpenter.jpg') }}" alt="Sphiwe Mokoena, owner of Moyela Carpentry" loading="lazy">
+        <img src="{{ url_for('static', filename='images/prod.png') }}" alt="Sphiwe Mokoena, owner of Moyela Carpentry" loading="lazy">
       </div>
     </div>
   </section>
@@ -106,7 +106,7 @@
 
   <!-- CTA -->
   <section class="section section--forest cta">
-    <div class="container">
+    <div class="container" id="cta">
       <h2 class="section__title">Ready to Transform Your Home?</h2>
       <p>Get in touch today for a free consultation and quote. Let's build something beautiful together.</p>
       <a href="{{ url_for('quote') }}" class="btn-primary">Request a Free Quote</a>
